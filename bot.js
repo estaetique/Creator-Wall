@@ -4,22 +4,22 @@ import fetch from "node-fetch";
 const TOKEN = process.env.TOKEN;
 const CHANNEL_ID = process.env.CHANNEL_ID;
 
-// PUT USERNAMES HERE (we’ll fill these in after)
+// 🎬 Mentor TikTok Usernames
 const mentors = [
-  "username1",
-  "username2",
-  "username3",
-  "username4",
-  "username5",
-  "username6",
-  "username7",
-  "username8",
-  "username9",
-  "username10",
-  "username11",
-  "username12",
-  "username13",
-  "username14"
+  "natminsi",
+  "estaetique",
+  "star4jin",
+  "daphxaep",
+  "honeyjoonie",
+  "_jkszn",
+  "k.topiaedits",
+  "alxvante",
+  "sunaevii",
+  "taex.guk",
+  "oh.kook_7",
+  "taekerrr",
+  "jungkookie.aep",
+  "chromakoo"
 ];
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
@@ -27,6 +27,7 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 let messageOne = null;
 let messageTwo = null;
 
+// 🔍 Fetch public TikTok profile data
 async function fetchTikTok(username) {
   try {
     const res = await fetch(`https://www.tiktok.com/@${username}`, {
@@ -48,10 +49,12 @@ async function fetchTikTok(username) {
       avatar
     };
   } catch (e) {
+    console.log(`Error fetching ${username}`);
     return null;
   }
 }
 
+// 🧩 Create profile-style embed
 function createEmbed(username, stats) {
   return new EmbedBuilder()
     .setColor(0x0f0f0f)
@@ -60,10 +63,13 @@ function createEmbed(username, stats) {
       url: `https://www.tiktok.com/@${username}`
     })
     .setThumbnail(stats.avatar || null)
-    .setDescription(`👥 **Followers:** ${stats.followers}\n❤️ **Likes:** ${stats.likes}`)
+    .setDescription(
+      `👥 **Followers:** ${stats.followers}\n❤️ **Likes:** ${stats.likes}`
+    )
     .setFooter({ text: "Editing World • Mentor TikTok Board" });
 }
 
+// 🔁 Update the board messages
 async function updateBoard() {
   const channel = await client.channels.fetch(CHANNEL_ID);
   if (!channel) return;
@@ -73,6 +79,7 @@ async function updateBoard() {
 
   for (let i = 0; i < mentors.length; i++) {
     const stats = await fetchTikTok(mentors[i]);
+
     const embed = stats
       ? createEmbed(mentors[i], stats)
       : new EmbedBuilder()
