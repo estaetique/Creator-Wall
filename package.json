@@ -1,0 +1,14 @@
+{
+  "name": "tiktok-mentor-board",
+  "version": "1.0.0",
+  "description": "Discord bot that posts TikTok mentor stats",
+  "main": "bot.js",
+  "type": "module",
+  "engines": {
+    "node": "18.x"
+  },
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "node-fetch": "^3.3.2"
+  }
+}
