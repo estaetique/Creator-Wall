@@ -32,13 +32,12 @@ const mentors = [
 
   { username: "jungkookie.aep", bio: "ae editor since 2019\neditor mentor · bts edits\nfailed, improved, found a style ✨\nae breakdowns are mandatory 😭", instagram: "jungkookie.aep" },
 
-  { username: "chromakoo", bio: "creative editor & mentor\nbts-inspired edits\nfocused on growth, style & storytelling\nalways open to helping others 💜", instagram: "chromakoo" }
+  { username: "chromakoo", bio: "creative editor & mentor\nbts-inspired edits\nfocused on growth, style & storytelling\nalways open to helping others 💜", instagram: "chromakoo" },
+
+  { username: "taelissv", bio: "editing since 2018 · ae since 2023\nstill learning something new every day\nmultifandom & always happy to help 🩷\nwe’re all growing together 🫶🏻", instagram: "taelissv" }
 ];
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
-
-let messageOneId = null;
-let messageTwoId = null;
 
 async function fetchTikTok(username) {
   try {
@@ -93,24 +92,21 @@ async function updateBoard() {
     else embedsTwo.push(embed);
   }
 
-  if (!messageOneId) {
-    const msg = await channel.send({ embeds: embedsOne });
-    messageOneId = msg.id;
-  } else {
-    const msg = await channel.messages.fetch(messageOneId);
-    await msg.edit({ embeds: embedsOne });
-  }
+  const messages = await channel.messages.fetch({ limit: 10 });
+  const botMessages = messages.filter(m => m.author.id === client.user.id);
 
-  if (!messageTwoId) {
-    const msg = await channel.send({ embeds: embedsTwo });
-    messageTwoId = msg.id;
+  if (botMessages.size >= 2) {
+    const sorted = botMessages.sort((a, b) => a.createdTimestamp - b.createdTimestamp);
+    const [msg1, msg2] = sorted.values();
+    await msg1.edit({ embeds: embedsOne });
+    await msg2.edit({ embeds: embedsTwo });
   } else {
-    const msg = await channel.messages.fetch(messageTwoId);
-    await msg.edit({ embeds: embedsTwo });
+    await channel.send({ embeds: embedsOne });
+    await channel.send({ embeds: embedsTwo });
   }
 }
 
-client.once("ready", () => {
+client.once("clientReady", () => {
   console.log(`Logged in as ${client.user.tag}`);
   updateBoard();
   setInterval(updateBoard, 10 * 60 * 1000);
